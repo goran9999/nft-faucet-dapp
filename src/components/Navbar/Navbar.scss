@@ -1,0 +1,38 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 1em 8em;
+  ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5em;
+  }
+  &__link {
+    font-size: 1em;
+    font-weight: 700;
+    color: var(--primary-green-color);
+    text-decoration: none;
+
+    &:hover {
+      border-bottom: 1px solid var(--primary-green-color);
+    }
+  }
+}
+.wallet-adapter-button-trigger {
+  border-radius: 8px;
+  background: transparent;
+  font-size: 14px;
+  height: 0;
+  padding: 1.25em 1.5em;
+  color: var(--primary-green-color);
+  border: solid 1px transparent;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0)
+    ),
+    linear-gradient(200deg, #2bfda7, #033bff);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  box-shadow: 1px 1000px 1px rgba(12, 20, 35, 0.95) inset;
+}

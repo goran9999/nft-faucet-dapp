@@ -1,0 +1,55 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(
+      0deg,
+      rgba(12, 20, 35, 0.95),
+      rgba(12, 20, 35, 0.95)
+    ),
+    rgba(5, 13, 29, 0.96);
+  background-image: url();
+}
+p,
+h3 {
+  font-family: "Montserrat";
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+:root {
+  --primary-green-color: #2bfda7;
+}
+
+//WALLET STYLING
+div .wallet-adapter-modal-button-close {
+  background: transparent;
+}
+
+.wallet-adapter-modal-title {
+  color: var(--primary-green-color) !important;
+}
+
+.wallet-adapter-button {
+  i {
+    img {
+      width: 20px !important;
+      height: 20px !important;
+    }
+  }
+  span {
+    display: none;
+  }
+}
+.wallet-adapter-dropdown-list,
+.wallet-adapter-dropdown-list-active {
+  display: flex;
+  flex-direction: column !important;
+  background-color: transparent !important;
+  padding: 0.5em 2em !important;
+}
