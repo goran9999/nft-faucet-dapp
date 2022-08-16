@@ -1,0 +1,99 @@
+.create-nft-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  &__input {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1em;
+    p {
+      color: white;
+      font-weight: 700;
+      font-size: 1em;
+      margin: 0;
+    }
+    input {
+      width: 96%;
+      border-radius: 8px;
+      color: white;
+      border: none;
+      padding: 1em;
+      background: rgba(29, 42, 68, 0.5);
+      &::placeholder {
+        color: white;
+        font-size: 0.8em;
+        opacity: 0.8;
+      }
+      &:focus-visible {
+        border: none;
+      }
+    }
+  }
+  &__image-placeholder {
+    width: 8em;
+    height: 9em;
+    border-radius: 8px;
+    border: solid 1px transparent;
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0)
+      ),
+      linear-gradient(200deg, #2bfda7, #033bff);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    box-shadow: 1px 1000px 1px rgba(12, 20, 35, 0.95) inset;
+    img {
+      width: 8em;
+      height: 9em;
+    }
+  }
+  &__image {
+    display: flex;
+    align-items: center;
+
+    gap: 1em;
+  }
+  &__select-image {
+    color: white;
+    cursor: pointer;
+    background: transparent;
+    padding: 1em 1.5em;
+    border-radius: 8px;
+    border: solid 1px transparent;
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0)
+      ),
+      linear-gradient(200deg, #2bfda7, #033bff);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    box-shadow: 1px 1000px 1px rgba(12, 20, 35, 0.95) inset;
+  }
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
+    margin: 2em 0 1em 0;
+  }
+  &__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 1em 2em;
+    border: none;
+    color: black;
+    font-size: 0.8em;
+    font-weight: 700;
+    background: linear-gradient(
+      to right,
+      var(--primary-green-color),
+      var(--linear-blue-color)
+    );
+    &--cancel {
+      background: rgba(29, 42, 68, 0.5);
+      color: white;
+    }
+  }
+}

@@ -4,3 +4,9 @@ export interface INftData {
   nftImageUrl: string;
   isPredefined: boolean;
 }
+
+export interface ICustomNftData {
+  nftName: string;
+  nftSymbol: string;
+  nftBase64Image: string;
+}
