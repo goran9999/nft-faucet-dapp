@@ -14,7 +14,8 @@ body {
   background-image: url();
 }
 p,
-h3 {
+h3,
+button {
   font-family: "Montserrat";
 }
 
@@ -54,4 +55,30 @@ div .wallet-adapter-modal-button-close {
   flex-direction: column !important;
   background-color: transparent !important;
   padding: 0.5em 2em !important;
+}
+
+div .notification-container {
+  top: 6px;
+  right: 13px;
+}
+
+div .notification {
+  font-family: "Montserrat", sans-serif;
+  border-radius: 10px;
+  font-size: 0.8em;
+  box-shadow: unset;
+  color: white;
+  word-break: break-word;
+}
+
+div .notification-error {
+  background-color: rgb(121, 7, 7);
+}
+
+.css-2m9kme-MuiFormControl-root {
+  margin: 0 !important;
+
+  &:focus {
+    border: white;
+  }
 }

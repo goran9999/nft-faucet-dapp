@@ -1,4 +1,25 @@
 .nft-faucet-page {
   padding: 0 8em;
   margin-top: 2em;
+
+  &__mint-button {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: 2em;
+    button {
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 1em 1.5em;
+      color: black;
+      font-size: 0.8em;
+      font-weight: 700;
+      background: linear-gradient(
+        to right,
+        var(--primary-green-color),
+        var(--linear-blue-color)
+      );
+    }
+  }
 }
