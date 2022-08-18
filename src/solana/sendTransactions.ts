@@ -9,11 +9,9 @@ import {
   Transaction,
   TransactionSignature,
   PublicKey,
-  TransactionInstruction,
 } from "@solana/web3.js";
 import { IInstructionData } from "../common/interface";
 import { RPC_CONNECTION } from "./helpers/utilities";
-
 import { getUnixTs, simulateTransaction } from "./sendTransaction";
 
 export const sleep = (ttl: number) =>
@@ -196,9 +194,8 @@ export async function sendSignedTransaction({
       ).value;
     } catch (e) {
       //
+      // throw new Error("Transaction failed" + txid);
     }
-
-    throw new Error(`$Transaction failed ${txid}`);
   } finally {
     done = true;
   }
@@ -226,6 +223,7 @@ export const sendTransactions = async (
   connection: Connection,
   wallet: WalletSigner,
   instructionSet: IInstructionData[],
+  // sequenceType: SequenceType = SequenceType.Sequential,
   commitment: Commitment = "singleGossip",
   successCallback: (txid: string, ind: number) => void = (_txid, _ind) => null,
   failCallback: (reason: string, ind: number) => boolean = (_txid, _ind) =>
@@ -258,54 +256,68 @@ export const sendTransactions = async (
         feePayer: wallet.publicKey,
         recentBlockhash: block.blockhash,
       });
-      if (instructions.partialSigner) {
-        transaction.partialSign(instructions.partialSigner);
-      }
 
       instructions.instructions.forEach((instruction) =>
         transaction.add(instruction)
       );
 
+      if (instructions.partialSigner) {
+        transaction.partialSign(instructions.partialSigner!);
+      }
+
       unsignedTxns.push(transaction);
+    }
 
-      const pendingTxns: { txid: string; slot: number }[] = [];
+    try {
+      signedTxns = await wallet.signAllTransactions(unsignedTxns);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
 
-      const breakEarlyObject = { breakEarly: false };
+    const pendingTxns: { txid: string; slot: number }[] = [];
 
-      for (let i = 0; i < signedTxns.length; i++) {
-        try {
-          const signedTxnPromise = await sendSignedTransaction({
-            connection,
-            signedTransaction: signedTxns[i],
-          });
+    const breakEarlyObject = { breakEarly: false };
 
-          pendingTxns.push(signedTxnPromise);
-        } catch (error: any) {
-          console.log(error);
-          const instructionsSetNew = instructionSet.slice(
-            i,
-            instructionSet.length
-          );
+    for (let i = 0; i < signedTxns.length; i++) {
+      try {
+        const signedTxnPromise = await sendSignedTransaction({
+          connection,
+          signedTransaction: signedTxns[i],
+        });
 
-          async () => {
-            try {
-              await sendTransactions(connection, wallet, instructionsSetNew);
-            } catch (error) {
-              console.log(error);
-            }
-          };
-        }
+        pendingTxns.push(signedTxnPromise);
+      } catch (error: any) {
+        console.log(error);
+        // const instructionsSetNew = instructionSet.slice(
+        //   i,
+        //   instructionSet.length
+        // );
 
-        // eslint-disable-next-line eqeqeq
+        // try {
+        //   await sendTransactions(
+        //     connection,
+        //     wallet,
+        //     instructionsSetNew
+        //     // sequenceType
+        //   );
+        // } catch (error) {
+        //   console.log(error);
+        // }
+
+        throw error;
       }
 
       // eslint-disable-next-line eqeqeq
-      // if (sequenceType != SequenceType.Parallel) {
-      //   await Promise.all(pendingTxns);
-      // }
     }
-  } catch (error) {
+
+    // eslint-disable-next-line eqeqeq
+    // if (sequenceType != SequenceType.Parallel) {
+    //   await Promise.all(pendingTxns);
+    // }
+  } catch (error: any) {
     console.log(error);
+
     throw error;
   }
 };

@@ -3,6 +3,12 @@ import {
   ACCOUNT_SIZE,
   createInitializeMintInstruction,
   createAssociatedTokenAccountInstruction,
+  TOKEN_PROGRAM_ID,
+  createMint,
+  AccountLayout,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  initializeMintInstructionData,
+  MINT_SIZE,
 } from "@solana/spl-token";
 import { AnchorWallet } from "@solana/wallet-adapter-react";
 import {
@@ -21,14 +27,16 @@ export async function createAndInitializeMint(wallet: AnchorWallet) {
       fromPubkey: wallet.publicKey,
       lamports: await getMinimumBalanceForRentExemptAccount(RPC_CONNECTION),
       newAccountPubkey: collectionMintKeypar.publicKey,
-      programId: SystemProgram.programId,
-      space: ACCOUNT_SIZE,
+      programId: TOKEN_PROGRAM_ID,
+      space: MINT_SIZE,
     });
+
     const createMintIx = createInitializeMintInstruction(
       collectionMintKeypar.publicKey,
       0,
       wallet.publicKey,
-      wallet.publicKey
+      wallet.publicKey,
+      TOKEN_PROGRAM_ID
     );
     return {
       mint: collectionMintKeypar,
@@ -47,23 +55,30 @@ export async function createAndInitializeAssociatedTokenAccount(
   mint: PublicKey
 ) {
   try {
-    const ataKeypar = Keypair.generate();
-    const createAccountIx = SystemProgram.createAccount({
-      fromPubkey: wallet.publicKey,
-      lamports: await getMinimumBalanceForRentExemptAccount(RPC_CONNECTION),
-      newAccountPubkey: ataKeypar.publicKey,
-      programId: SystemProgram.programId,
-      space: ACCOUNT_SIZE,
-    });
+    const [ataAddress] = await PublicKey.findProgramAddress(
+      [
+        wallet.publicKey.toBuffer(),
+        TOKEN_PROGRAM_ID.toBuffer(),
+        mint.toBuffer(),
+      ],
+      ASSOCIATED_TOKEN_PROGRAM_ID
+    );
+    // const createAccountIx = SystemProgram.createAccount({
+    //   fromPubkey: wallet.publicKey,
+    //   lamports: await getMinimumBalanceForRentExemptAccount(RPC_CONNECTION),
+    //   newAccountPubkey: ataAddress,
+    //   programId: SystemProgram.programId,
+    //   space: ACCOUNT_SIZE,
+    // });
     const createAtaIx = createAssociatedTokenAccountInstruction(
       wallet.publicKey,
-      ataKeypar.publicKey,
+      ataAddress,
       wallet.publicKey,
       mint
     );
     return {
-      ataKeypar: ataKeypar,
-      createAtaAccountIx: createAccountIx,
+      ataKeypar: ataAddress,
+      // createAtaAccountIx: createAccountIx,
       createAtaIx: createAtaIx,
     };
   } catch (error) {

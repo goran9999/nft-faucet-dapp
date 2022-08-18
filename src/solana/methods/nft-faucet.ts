@@ -2,10 +2,12 @@ import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { AnchorWallet } from "@solana/wallet-adapter-react";
 import {
   AccountMeta,
+  Keypair,
   PublicKey,
   SystemProgram,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
+  TransactionInstruction,
 } from "@solana/web3.js";
 import { ICustomNftData, IInstructionData } from "../../common/interface";
 import {
@@ -28,27 +30,27 @@ export async function mintNfts(
 ) {
   try {
     const allInstructions: IInstructionData[] = [];
-    let collectionMint: PublicKey | undefined;
+    let collectionMint: Keypair | undefined;
     const nftFaucet = nftFaucetProgram();
     const { mint, createAccountIx, createMintIx } =
       await createAndInitializeMint(wallet);
-    collectionMint = mint.publicKey;
+    collectionMint = mint;
     allInstructions.push({
       instructions: [createAccountIx, createMintIx],
-      partialSigner: mint,
+      partialSigner: collectionMint,
     });
 
     const chunkedNfts = chunk(nfts, 2);
     const chunkedMetadatas = chunk(metadataUris, 2);
-    if (chunkedNfts.length !== chunkedMetadatas.length) {
-      throw new Error("Missing metadatas for nft!");
-    }
+    // if (chunkedNfts.length !== chunkedMetadatas.length) {
+    //   throw new Error("Missing metadatas for nft!");
+    // }
     for (const [arrayIndex, nftArray] of chunkedNfts.entries()) {
       for (const [nftInfex, nft] of nftArray.entries()) {
-        const relatedMetadata = chunkedMetadatas[arrayIndex][nftInfex];
+        // const relatedMetadata = chunkedMetadatas[arrayIndex][nftInfex];
         const { mint, createAccountIx, createMintIx } =
           await createAndInitializeMint(wallet);
-        const { ataKeypar, createAtaAccountIx, createAtaIx } =
+        const { ataKeypar, createAtaIx } =
           await createAndInitializeAssociatedTokenAccount(
             wallet,
             mint.publicKey
@@ -57,9 +59,9 @@ export async function mintNfts(
           instructions: [createAccountIx, createMintIx],
           partialSigner: mint,
         });
+
         allInstructions.push({
-          instructions: [createAtaAccountIx, createAtaIx],
-          partialSigner: ataKeypar,
+          instructions: [createAtaIx],
         });
         const [metadataPda] = await PublicKey.findProgramAddress(
           [
@@ -81,13 +83,13 @@ export async function mintNfts(
         const remainingAccounts: AccountMeta[] = [];
         remainingAccounts.push({
           isSigner: false,
-          isWritable: false,
+          isWritable: true,
           pubkey: mint.publicKey,
         });
         remainingAccounts.push({
           isSigner: false,
           isWritable: true,
-          pubkey: ataKeypar.publicKey,
+          pubkey: ataKeypar,
         });
         remainingAccounts.push({
           isSigner: false,
@@ -102,21 +104,27 @@ export async function mintNfts(
         const [nftCollectionData] = await PublicKey.findProgramAddress(
           [
             Buffer.from("nft-minting"),
-            collectionMint.toBuffer(),
             wallet.publicKey.toBuffer(),
+            collectionMint.publicKey.toBuffer(),
           ],
           nftFaucet.programId
         );
         const mintNftIx = nftFaucet.instruction.mintNftCollection(
-          [{ name: nft.nftName, symbor: nft.nftSymbol, uri: relatedMetadata }],
+          [
+            {
+              name: nft.nftName,
+              symbol: nft.nftSymbol,
+              uri: "https://metadata.degods.com/g/9999.json",
+            },
+          ],
           {
             accounts: {
               nftCollectionData,
               nftAuthority: wallet.publicKey,
-              collectionAddress: collectionMint,
               systemProgram: SystemProgram.programId,
               tokenProgram: TOKEN_PROGRAM_ID,
               clock: SYSVAR_CLOCK_PUBKEY,
+              collectionAddress: collectionMint.publicKey,
               rent: SYSVAR_RENT_PUBKEY,
               metadataProgram: METADATA_PROGRAM_ID,
             },
@@ -127,8 +135,8 @@ export async function mintNfts(
           instructions: [mintNftIx],
         });
       }
-      await sendTransactions(RPC_CONNECTION, wallet, allInstructions);
     }
+    await sendTransactions(RPC_CONNECTION, wallet, allInstructions);
   } catch (error) {
     console.log(error);
     throw error;

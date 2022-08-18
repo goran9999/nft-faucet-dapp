@@ -37,19 +37,26 @@ const NftFaucetPage = () => {
   }, [customNfts]);
 
   const mintNftCollection = async () => {
-    const metadatasUri: string[] = [];
+    let metadatasUri: string[] = [];
     try {
-      for (const customNft of customNfts) {
-        const savedImageUrl = await saveImageToS3Bucket(
-          customNft.nftBase64Image
-        );
-        const savedMetadata = await parseAndUploadNftMetadata(
-          customNft,
-          savedImageUrl,
-          "walletAddress"
-        );
-        metadatasUri.push(savedMetadata!);
-      }
+      // for (const customNft of customNfts) {
+      //   const savedImageUrl = await saveImageToS3Bucket(
+      //     customNft.nftBase64Image
+      //   );
+      //   const savedMetadata = await parseAndUploadNftMetadata(
+      //     customNft,
+      //     savedImageUrl,
+      //     wallet!.publicKey.toString()
+      //   );
+      //   metadatasUri.push(savedMetadata!);
+      // }
+      customNfts.push({
+        nftBase64Image: "2313",
+        nftName: "UNQ #0000",
+        nftSymbol: "UNQ",
+      });
+      metadatasUri = ["https://metadata.degods.com/g/9999.json"];
+
       await mintNfts(customNfts, metadatasUri, wallet!);
       createNotification(
         MESSAGE_TYPE.SUCCESS,

@@ -21,7 +21,7 @@ export async function sendTransaction({
   connection,
   sendingMessage = "Sending transaction...",
   errorMessage = "Transaction failed",
-  timeout = 60000,
+  timeout = 600000,
 }: {
   transaction: Transaction;
   wallet: AnchorWallet;

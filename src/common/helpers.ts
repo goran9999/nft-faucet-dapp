@@ -4,27 +4,24 @@ import { ICustomNftData, MESSAGE_TYPE } from "./interface";
 import { NotificationManager } from "react-notifications";
 
 import metadataBoilerplate from "../assets/metadata-boilerplate.json";
-import { bucketName, accessKey, secretKey } from "./constants";
+import {
+  bucketName,
+  accessKey,
+  secretKey,
+  BASE_URL,
+  NFT_METADATA,
+  NFT_IMAGE,
+} from "./constants";
+import { post } from "./api";
 export const saveImageToS3Bucket = async (base64Image: string) => {
   try {
-    if (!bucketName) {
-      throw new Error("Problem with S3 bucket config");
-    }
-
-    const s3 = new AWS.S3({
-      accessKeyId: accessKey,
-      secretAccessKey: secretKey,
+    const savedData = await post(BASE_URL + NFT_IMAGE, {
+      nftImage: base64Image,
     });
+    console.log(savedData);
 
-    const uploadedImage = await s3
-      .upload({
-        Bucket: bucketName,
-        Key: new Date().toISOString(),
-        Body: base64Image,
-      })
-      .promise();
-
-    return uploadedImage.Location;
+    const savedDataJson = await savedData.json();
+    return savedDataJson;
   } catch (error) {
     console.log(error);
     throw error;
@@ -47,23 +44,12 @@ export const parseAndUploadNftMetadata = async (
         share: 100,
       },
     ];
-    const s3 = new AWS.S3({
-      accessKeyId: accessKey,
-      secretAccessKey: secretKey,
+
+    const savedData = await post(BASE_URL + NFT_METADATA, {
+      nftMetadata: newMetadata,
     });
-
-    if (!bucketName) {
-      throw new Error("Problem with S3 bucket config");
-    }
-
-    const uploadedMetadata = await s3
-      .upload({
-        Bucket: bucketName,
-        Key: "meta-" + new Date().toISOString(),
-        Body: JSON.stringify(newMetadata),
-      })
-      .promise();
-    return uploadedMetadata.Location;
+    const savedDataJson = await savedData.json();
+    return savedDataJson;
   } catch (error) {
     console.log(error);
   }
