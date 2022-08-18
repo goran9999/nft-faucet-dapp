@@ -9,7 +9,11 @@ import {
   SYSVAR_RENT_PUBKEY,
   TransactionInstruction,
 } from "@solana/web3.js";
-import { ICustomNftData, IInstructionData } from "../../common/interface";
+import {
+  ICustomNftData,
+  IInstructionData,
+  INftData,
+} from "../../common/interface";
 import {
   METADATA_PROGRAM_ID,
   nftFaucetProgram,
@@ -24,7 +28,7 @@ import {
 import { sendTransactions } from "../sendTransactions";
 
 export async function mintNfts(
-  nfts: ICustomNftData[],
+  nfts: INftData[],
   metadataUris: string[],
   wallet: AnchorWallet
 ) {
@@ -47,7 +51,7 @@ export async function mintNfts(
     // }
     for (const [arrayIndex, nftArray] of chunkedNfts.entries()) {
       for (const [nftInfex, nft] of nftArray.entries()) {
-        // const relatedMetadata = chunkedMetadatas[arrayIndex][nftInfex];
+        const relatedMetadata = chunkedMetadatas[arrayIndex][nftInfex];
         const { mint, createAccountIx, createMintIx } =
           await createAndInitializeMint(wallet);
         const { ataKeypar, createAtaIx } =
@@ -114,7 +118,7 @@ export async function mintNfts(
             {
               name: nft.nftName,
               symbol: nft.nftSymbol,
-              uri: "https://metadata.degods.com/g/9999.json",
+              uri: relatedMetadata,
             },
           ],
           {

@@ -38,26 +38,36 @@ const NftFaucetPage = () => {
 
   const mintNftCollection = async () => {
     let metadatasUri: string[] = [];
+    const nftsToMint: INftData[] = [];
+    for (const predefinedNft of selectedNfts) {
+      const savedMetadata = await parseAndUploadNftMetadata(
+        predefinedNft,
+        predefinedNft.nftImageUrl,
+        wallet!.publicKey.toString()
+      );
+      metadatasUri.push(savedMetadata);
+      nftsToMint.push(predefinedNft);
+    }
     try {
-      // for (const customNft of customNfts) {
-      //   const savedImageUrl = await saveImageToS3Bucket(
-      //     customNft.nftBase64Image
-      //   );
-      //   const savedMetadata = await parseAndUploadNftMetadata(
-      //     customNft,
-      //     savedImageUrl,
-      //     wallet!.publicKey.toString()
-      //   );
-      //   metadatasUri.push(savedMetadata!);
-      // }
-      customNfts.push({
-        nftBase64Image: "2313",
-        nftName: "UNQ #0000",
-        nftSymbol: "UNQ",
-      });
-      metadatasUri = ["https://metadata.degods.com/g/9999.json"];
+      for (const customNft of customNfts) {
+        const savedImageUrl = await saveImageToS3Bucket(
+          customNft.nftBase64Image
+        );
+        const savedMetadata = await parseAndUploadNftMetadata(
+          customNft,
+          savedImageUrl,
+          wallet!.publicKey.toString()
+        );
+        metadatasUri.push(savedMetadata!);
+        predefinedNfts.push({
+          isPredefined: false,
+          nftImageUrl: savedImageUrl,
+          nftName: customNft.nftName,
+          nftSymbol: customNft.nftSymbol,
+        });
+      }
 
-      await mintNfts(customNfts, metadatasUri, wallet!);
+      await mintNfts(nftsToMint, metadatasUri, wallet!);
       createNotification(
         MESSAGE_TYPE.SUCCESS,
         "Nfts successfully minted",

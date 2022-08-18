@@ -1,5 +1,5 @@
 import AWS from "aws-sdk";
-import { ICustomNftData, MESSAGE_TYPE } from "./interface";
+import { ICustomNftData, INftData, MESSAGE_TYPE } from "./interface";
 
 import { NotificationManager } from "react-notifications";
 
@@ -29,7 +29,7 @@ export const saveImageToS3Bucket = async (base64Image: string) => {
 };
 
 export const parseAndUploadNftMetadata = async (
-  nft: ICustomNftData,
+  nft: ICustomNftData | INftData,
   imageUrl: string,
   creator: string
 ) => {
@@ -48,8 +48,10 @@ export const parseAndUploadNftMetadata = async (
     const savedData = await post(BASE_URL + NFT_METADATA, {
       nftMetadata: newMetadata,
     });
+    console.log(savedData);
     const savedDataJson = await savedData.json();
-    return savedDataJson;
+    console.log(savedDataJson);
+    return savedDataJson.metadataUrl;
   } catch (error) {
     console.log(error);
   }
