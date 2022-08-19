@@ -34,6 +34,8 @@ export const parseAndUploadNftMetadata = async (
   creator: string
 ) => {
   try {
+    console.log(imageUrl);
+
     const newMetadata = { ...metadataBoilerplate };
     newMetadata.name = nft.nftName;
     newMetadata.symbol = nft.nftSymbol;

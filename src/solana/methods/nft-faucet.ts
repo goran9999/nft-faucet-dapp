@@ -45,10 +45,9 @@ export async function mintNfts(
     });
 
     const chunkedNfts = chunk(nfts, 2);
+    console.log(nfts);
     const chunkedMetadatas = chunk(metadataUris, 2);
-    // if (chunkedNfts.length !== chunkedMetadatas.length) {
-    //   throw new Error("Missing metadatas for nft!");
-    // }
+
     for (const [arrayIndex, nftArray] of chunkedNfts.entries()) {
       for (const [nftInfex, nft] of nftArray.entries()) {
         const relatedMetadata = chunkedMetadatas[arrayIndex][nftInfex];

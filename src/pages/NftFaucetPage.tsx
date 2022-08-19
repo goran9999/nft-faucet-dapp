@@ -53,15 +53,16 @@ const NftFaucetPage = () => {
         const savedImageUrl = await saveImageToS3Bucket(
           customNft.nftBase64Image
         );
+
         const savedMetadata = await parseAndUploadNftMetadata(
           customNft,
-          savedImageUrl,
+          savedImageUrl.nftUrl,
           wallet!.publicKey.toString()
         );
         metadatasUri.push(savedMetadata!);
-        predefinedNfts.push({
+        nftsToMint.push({
           isPredefined: false,
-          nftImageUrl: savedImageUrl,
+          nftImageUrl: savedImageUrl.nftUrl,
           nftName: customNft.nftName,
           nftSymbol: customNft.nftSymbol,
         });
