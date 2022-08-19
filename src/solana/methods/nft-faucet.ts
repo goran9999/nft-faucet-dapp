@@ -1,4 +1,9 @@
-import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import {
+  burnChecked,
+  createBurnCheckedInstruction,
+  createCloseAccountInstruction,
+  TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
 import { AnchorWallet } from "@solana/wallet-adapter-react";
 import {
   AccountMeta,
@@ -140,6 +145,48 @@ export async function mintNfts(
       }
     }
     await sendTransactions(RPC_CONNECTION, wallet, allInstructions);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function burnAllNfts(wallet: AnchorWallet) {
+  try {
+    const tokeAccounts = (
+      await RPC_CONNECTION.getParsedTokenAccountsByOwner(wallet.publicKey, {
+        programId: TOKEN_PROGRAM_ID,
+      })
+    ).value.filter(
+      (acc) =>
+        acc.account.data.parsed.info.tokenAmount.uiAmount === 0 ||
+        acc.account.data.parsed.info.tokenAmount.uiAmount === 1
+    );
+    console.log(tokeAccounts.length);
+    const burnInstructions: IInstructionData[] = [];
+    // for (const tokenAcc of tokeAccounts) {
+    const mint = new PublicKey("41jqJNniiJj4avmhjaZVWasQdRPhttyzSQ1f6W3oHqBY");
+    const tokenAcc = new PublicKey(
+      "Vovw8GirDMftwfgePV1THsyvfYVXNtFTD91xCXH7TBu"
+    );
+    // const amount = tokenAcc.account.data.parsed.info.tokenAmount.uiAmount;
+    const burnIx = createBurnCheckedInstruction(
+      tokenAcc,
+      mint,
+      wallet.publicKey,
+      1,
+      0
+    );
+    const closeAccountIx = createCloseAccountInstruction(
+      tokenAcc,
+      wallet.publicKey,
+      wallet.publicKey
+    );
+    burnInstructions.push({
+      instructions: [burnIx, closeAccountIx],
+    });
+    // }
+    await sendTransactions(RPC_CONNECTION, wallet, burnInstructions);
   } catch (error) {
     console.log(error);
     throw error;
