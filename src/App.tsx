@@ -1,7 +1,8 @@
 import React from "react";
-
+import "react-notifications/lib/notifications.css";
 import "./App.css";
 import { WalletWrapper } from "./components/WalletWrapper/WalletWrapper";
+import {NotificationContainer} from 'react-notifications'
 import Routes from "./Routes";
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
     <div className="App">
       <WalletWrapper>
         <Routes />
+        <NotificationContainer/>
       </WalletWrapper>
     </div>
   );

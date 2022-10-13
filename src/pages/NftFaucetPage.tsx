@@ -49,25 +49,28 @@ const NftFaucetPage = () => {
       nftsToMint.push(predefinedNft);
     }
     try {
+      
       for (const customNft of customNfts) {
         const savedImageUrl = await saveImageToS3Bucket(
           customNft.nftBase64Image
         );
         const savedMetadata = await parseAndUploadNftMetadata(
           customNft,
-          savedImageUrl,
+          savedImageUrl.nftUrl,
           wallet!.publicKey.toString()
         );
+        
         metadatasUri.push(savedMetadata!);
-        predefinedNfts.push({
+        nftsToMint.push({
           isPredefined: false,
-          nftImageUrl: savedImageUrl,
+          nftImageUrl: savedImageUrl.nftUrl,
           nftName: customNft.nftName,
           nftSymbol: customNft.nftSymbol,
         });
       }
 
       await mintNfts(nftsToMint, metadatasUri, wallet!);
+     
       createNotification(
         MESSAGE_TYPE.SUCCESS,
         "Nfts successfully minted",

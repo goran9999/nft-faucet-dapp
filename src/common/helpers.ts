@@ -5,9 +5,7 @@ import { NotificationManager } from "react-notifications";
 
 import metadataBoilerplate from "../assets/metadata-boilerplate.json";
 import {
-  bucketName,
-  accessKey,
-  secretKey,
+
   BASE_URL,
   NFT_METADATA,
   NFT_IMAGE,
@@ -64,6 +62,8 @@ export const createNotification = (
 ) => {
   switch (messageType) {
     case MESSAGE_TYPE.SUCCESS:
+      console.log(NotificationManager);
+      
       NotificationManager.success(messageText);
       break;
     case MESSAGE_TYPE.ERROR:

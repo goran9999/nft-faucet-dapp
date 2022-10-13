@@ -48,7 +48,7 @@ export async function mintNfts(
     const chunkedMetadatas = chunk(metadataUris, 2);
     // if (chunkedNfts.length !== chunkedMetadatas.length) {
     //   throw new Error("Missing metadatas for nft!");
-    // }
+    // }    
     for (const [arrayIndex, nftArray] of chunkedNfts.entries()) {
       for (const [nftInfex, nft] of nftArray.entries()) {
         const relatedMetadata = chunkedMetadatas[arrayIndex][nftInfex];
@@ -113,6 +113,7 @@ export async function mintNfts(
           ],
           nftFaucet.programId
         );
+        
         const mintNftIx = nftFaucet.instruction.mintNftCollection(
           [
             {
@@ -140,6 +141,7 @@ export async function mintNfts(
         });
       }
     }
+
     await sendTransactions(RPC_CONNECTION, wallet, allInstructions);
   } catch (error) {
     console.log(error);

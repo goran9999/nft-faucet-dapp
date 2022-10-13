@@ -20,6 +20,7 @@
     "dayjs": "^1.11.1",
     "lodash": "^4.17.21",
     "node": "^18.7.0",
+    "node-darwin-x64": "^18.9.0",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "react": "^17.0.2",
     "react-countdown": "^2.3.2",
@@ -35,7 +36,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "PORT=8080 react-scripts start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
