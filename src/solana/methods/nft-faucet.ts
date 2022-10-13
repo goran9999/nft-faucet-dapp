@@ -50,7 +50,6 @@ export async function mintNfts(
     });
 
     const chunkedNfts = chunk(nfts, 2);
-    console.log(nfts);
     const chunkedMetadatas = chunk(metadataUris, 2);
     for (const [arrayIndex, nftArray] of chunkedNfts.entries()) {
       for (const [nftInfex, nft] of nftArray.entries()) {
