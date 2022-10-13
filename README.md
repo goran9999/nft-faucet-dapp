@@ -16,7 +16,7 @@ NFT faucet is decentralized application used to airdrop NFTs to your wallet on D
 1. Clone the project. Example:
 
 ```
-git clone https://github.com/unqclub/unq-club-app.git
+git clone https://github.com/goran9999/nft-faucet-dapp.git
 ```
 
 2. Build the project. Example:
