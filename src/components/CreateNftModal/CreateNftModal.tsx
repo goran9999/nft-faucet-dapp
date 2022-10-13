@@ -22,7 +22,7 @@ const CreateNftModal: FC<{ closeModal: () => void }> = ({ closeModal }) => {
   };
 
   const { getRootProps, getInputProps, open } = useDropzone({
-    accept: [".jpg", ".jpeg", ".png"],
+    accept: [".jpg", ".jpeg", ".png", ".jfif"],
     noClick: true,
     onDrop: (acceptedFile) => {
       readBase64Img(acceptedFile);

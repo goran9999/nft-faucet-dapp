@@ -54,6 +54,7 @@ const NftFaucetPage = () => {
         const savedImageUrl = await saveImageToS3Bucket(
           customNft.nftBase64Image
         );
+
         const savedMetadata = await parseAndUploadNftMetadata(
           customNft,
           savedImageUrl.nftUrl,
